@@ -107,8 +107,15 @@ class App extends Component{
   changeCheckboxColor(id){
   
        var element = document.getElementById(id);
-      element.classList.add("btn-danger");
-      console.log(this)
+       if(element.classList.contains("btn-secondary")){
+        element.classList.remove("btn-secondary")
+        element.classList.add("btn-danger");
+
+       }
+      else if (element.classList.contains("btn-danger")) {
+        element.classList.remove("btn-danger")
+        element.classList.add("btn-secondary");
+      }
   }
 
   render(){
@@ -147,11 +154,10 @@ class App extends Component{
                                   <div className="input-group mb-3">
                                     <div className="input-group-prepend">
                                       <div className="input-group-text">
-                                        <input type="checkbox" aria-label="Checkbox for following text input" onClick={() => this.changeCheckboxColor(item.id)}/>
+                                        <input type="checkbox" aria-label="Checkbox for following text input" onChange={() => this.changeCheckboxColor(item.id)}/>
                                       </div>
                                     </div>
                                     <input type="text" className="form-control" aria-label="Text input with checkbox" value={item.value}/>
-
                                     <button id = {item.id} className="btn btn-secondary" onClick={() => this.deleteItem(item.id)}>X</button>
                                   </div>
                                 </div> 
@@ -167,6 +173,5 @@ class App extends Component{
     );
   }
 }
-
 
 export default App;
