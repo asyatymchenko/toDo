@@ -108,6 +108,7 @@ class App extends Component{
   
        var element = document.getElementById(id);
       element.classList.add("btn-danger");
+      console.log(this)
   }
 
   render(){
@@ -123,36 +124,37 @@ class App extends Component{
                 <div className="row justify-content-center">
                     <div className="col-8">
                         <div className="row justify-content-center">
-                          <input
-                          id="taskInput"
-                          type="text"
-                          placeholder="Type item here"
-                          value={this.state.newItem}
-                          onChange={e => this.updateInput("newItem", e.target.value)}/>
-                          <button 
-                          id="taskAddBtn"
-                          className="btn btn-secondary" 
-                          onClick={() => this.addItem()}
-                          disabled={!this.state.newItem.length}>add
-                          </button>
+
+                          <div class="input-group mb-3">
+                              <input type="text" class="form-control" placeholder="Type item here"  
+                                aria-label="Recipient's username" aria-describedby="button-addon2"  
+                                value={this.state.newItem}
+                               onChange={e => this.updateInput("newItem", e.target.value)}/>
+                              <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="taskAddBtn"
+                                onClick={() => this.addItem()}
+                              disabled={!this.state.newItem.length}>Add</button>
+                              </div>
+                          </div>
                         </div>
+
                         <div className ="row justify-content-center">
                           <ul className="p-4">
                           {this.state.list.map(item => {
                             return (
-
                               <li className="row align-items-start" key={item.id}>
-                                <div className = "container " >
+                                <div className = "container">
                                   <div className="input-group mb-3">
-                                    <input type="checkbox" onClick={() => this.changeCheckboxColor(item.id, this)} />   
-                                  <input type="text" className="form-control" placeholder="task" value={item.value} aria-describedby="basic-addon2"/>
-                                  <button 
-                                    id = {item.id} 
-                                    className="btn btn-secondary"
-                                    onClick={() => this.deleteItem(item.id)}>X</button>
+                                    <div className="input-group-prepend">
+                                      <div className="input-group-text">
+                                        <input type="checkbox" aria-label="Checkbox for following text input" onClick={() => this.changeCheckboxColor(item.id)}/>
+                                      </div>
+                                    </div>
+                                    <input type="text" className="form-control" aria-label="Text input with checkbox" value={item.value}/>
+
+                                    <button id = {item.id} className="btn btn-secondary" onClick={() => this.deleteItem(item.id)}>X</button>
                                   </div>
-                                </div>
-                                
+                                </div> 
                             </li>
                             );
                           })}
@@ -165,5 +167,6 @@ class App extends Component{
     );
   }
 }
+
 
 export default App;
