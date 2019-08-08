@@ -10,56 +10,13 @@ class ToDoList extends React.Component{
       newItem: '',
       tasks: []
     };
-    //this.deleteTask = this.deleteTask.bind(this);
-    //this.getTask = this.getTask.bind(this);
   }
-  
-  /*
-  changeCheckboxColor(id){   
-    var element = document.getElementById(id);
-    if(element.classList.contains("btn-secondary")){
-    element.classList.remove("btn-secondary")
-    element.classList.add("btn-danger");
-    }
-    else if (element.classList.contains("btn-danger")) {
-      element.classList.remove("btn-danger")
-      element.classList.add("btn-secondary");
-    }
-  }
-  */
 
   getTask(){
-    axios.get('http://localhost:3000/api/v1/tasks')
-    /*
-    .then(response => {
-      this.setState({tasks: response.data})
-    })
-    .catch(error => console.log(error))
-    console.log(this.state.tasks[0]);
-    
-    .then(function (response) {
-    // handle success
-      console.log(response);
-     // this.state.tasks=response.data;
-      this.setState({tasks: this.state.tasks});
-      console.log(this.state.tasks[0]);
-      
-
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      })
-      .finally(function () {
-        // always executed
-      });
-      */
+    axios.get('http://localhost:3000/tasks')
     .then(response => {
       for (let i = 0; i < response.data.length; i++) {
-        this.state.tasks.push({id: response.data[i].id, title: response.data[i].title, checked: response.data[i].checked});
-        //console.log("task: "+response.data[i].id+" "+response.data[i].title+" "+response.data[i].checked);
-        //console.log("test: "+this.state.tasks[i].id);
-        console.log("test: "+JSON.stringify(this.state.tasks[i]));
+        this.state.tasks.push({id: response.data[i].id, title: response.data[i].title, done: response.data[i].done});
       }
       this.setState({tasks: this.state.tasks});
     });
@@ -68,13 +25,11 @@ class ToDoList extends React.Component{
   componentDidMount() {
    this.getTask();
   }
- // componentWillMount() {
- //  this.getTask();
- // }
-
+ 
   createTask = (e) => {
     console.log("Title: "+ this.state.newItem);
-    axios.post('http://localhost:3000/api/v1/tasks', {task: this.state.newItem})
+
+    axios.post('http://localhost:3000/tasks',  {title: this.state.newItem, done: false})
     .then(response => {
       const tasks = update(this.state.tasks, {
         $splice: [[0, 0, response.data]]
@@ -85,8 +40,6 @@ class ToDoList extends React.Component{
       })
     })
     .catch(error => console.log(error))   
-
-
   }
  
   handleChange = (e) => {
@@ -94,21 +47,35 @@ class ToDoList extends React.Component{
   }
 
   updateTask = (e, id) => {
-    axios.put(`http://localhost:3000/api/v1/tasks/${id}`, {task: {checked: e.target.checked}})
+    var checked = e.target.checked;
+    axios.put(`http://localhost:3000/tasks/${id}`, {task: {done: checked}})
     .then(response => {
       const taskIndex = this.state.tasks.findIndex(x => x.id === response.data.id)
-      const tasks = update(this.state.tasks, {
-        [taskIndex]: {$set: response.data}
+      const tasks = update(this.state.tasks, {[taskIndex]: {$set: response.data}
       })
       this.setState({
         tasks: tasks
       })
     })
-    .catch(error => console.log(error))      
+    .catch(error => console.log(error))   
+
+    this.changeButtonColor(id, checked);
+  }
+
+  changeButtonColor(id,checked){   
+    var element = document.getElementById(id);
+    if(checked){
+    element.classList.remove("btn-secondary")
+    element.classList.add("btn-danger");
+    }
+    else if (!checked) {
+      element.classList.remove("btn-danger")
+      element.classList.add("btn-secondary");
+    }
   }
 
   deleteTask = (id) => {
-    axios.delete(`http://localhost:3000/api/v1/tasks/${id}`)
+    axios.delete(`http://localhost:3000/tasks/${id}`)
     .then(response => {
       const taskIndex = this.state.tasks.findIndex(x => x.id === id)
       const tasks = update(this.state.tasks, {
@@ -144,17 +111,17 @@ class ToDoList extends React.Component{
           <ul className="p-4">
             {this.state.tasks.map(item => {
               return (
-                <li className="row align-items-start" key={this.item.id}>
+                <li className="row align-items-start" key={item.id}>
                   <div className = " d-flex justify-content-start">
                     <div className="input-group mb-3">
                       <div className="input-group-prepend">
                         <div className="input-group-text">
-                         <input type="checkbox" onChange={(e) => this.updateTask(e, item.id)} checked={item.checked}/>
+                         <input type="checkbox" onChange={(e) => this.updateTask(e, item.id)} checked={item.done}/>
                         </div>
                       </div>
-                      <input type="text" className="form-control" aria-label="Text input with checkbox" value={this.item.value}/>
+                      <input type="text" className="form-control" aria-label="Text input with checkbox" value={item.title}/>
                     </div>    
-                    <button className="btn btn-secondary mb-3" onClick={(e) => this.deleteTask(item.id)}>X</button>
+                    <button className="btn btn-secondary mb-3" onClick={(e) => this.deleteTask(item.id)} id={item.id}>X</button>
                   </div> 
                 </li>     
               );
