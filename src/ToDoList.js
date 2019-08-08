@@ -1,8 +1,6 @@
 import React from 'react';
 import axios from 'axios'
-import update from 'immutability-helper'
 import ToDoItem from './ToDoItem'
-
 
 class ToDoList extends React.Component{
 constructor(props) {
@@ -11,7 +9,9 @@ constructor(props) {
       tasks: []
     };
   }
+  
   getTask(){
+    console.log("to_do_LIST_GET");
     axios.get('http://localhost:3000/tasks')
     .then(response => {
       for (let i = 0; i < response.data.length; i++) {
@@ -28,7 +28,7 @@ constructor(props) {
 render(){
     return  (
       <div className ="col-5 justify-content-center">
-        <div >
+        <div className="over-class">
           <ul className="p-4">
             {this.state.tasks.map(item => {
               return (<ToDoItem id={item.id} title={item.title} done={item.done} description={item.description}/>);})

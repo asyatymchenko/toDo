@@ -1,59 +1,51 @@
 import React from 'react';
 import axios from 'axios'
-import update from 'immutability-helper'
-
+//import update from 'immutability-helper'
+import Modal from './Modal'
 
 class ToDoItem extends React.Component{
 constructor(props) {
     super(props);
     this.state = {
-      newItem: '',
-      newDescription: '',
-      tasks: []
+      status: false,
+      title: ""
     };
   }
-getTask(){
-    axios.get('http://localhost:3000/tasks')
+
+  getTask(id){
+    axios.get(`http://localhost:3000/tasks/${id}`)
     .then(response => {
-      for (let i = 0; i < response.data.length; i++) {
-        this.state.tasks.push({id: response.data[i].id, title: response.data[i].title, done: response.data[i].done, description: response.data[i].description});
-      }
-      this.setState({tasks: this.state.tasks});
+      this.setState({status: response.data.done});
     });
   }
 
   componentDidMount() {
-   this.getTask();
+   this.getTask(this.props.id);
   }
-    
+
   updateTask = (e, id) => {
     var checked = e.target.checked;
+   // console.log("to_do_ITEM_PUT(id) "+checked);
     axios.put(`http://localhost:3000/tasks/${id}`, {task: {done: checked}})
     .then(response => {
-      const taskIndex = this.state.tasks.findIndex(x => x.id === response.data.id)
-      const tasks = update(this.state.tasks, {[taskIndex]: {$set: response.data}
-      })
-      this.setState({
-        tasks: tasks
-      })
+      this.setState({status: response.data.done});
     })
     .catch(error => console.log(error))   
-
     this.changeButtonColor(id, checked);
   }
 
+
   deleteTask = (id) => {
+    console.log("to_do_ITEM_DELETE(id) "+id);
     axios.delete(`http://localhost:3000/tasks/${id}`)
     .then(response => {
-      const taskIndex = this.state.tasks.findIndex(x => x.id === id)
-      const tasks = update(this.state.tasks, {
-        $splice: [[taskIndex, 1]]
+     console.log("responce");
       })
       this.setState({
-        tasks: tasks
+        status: false
       })
-    })
-    .catch(error => console.log(error))
+   // })
+    //.catch(error => console.log(error))
   }
 
   changeButtonColor(id,checked){   
@@ -76,7 +68,7 @@ render(){
               <div className="input-group mb-3">
                 <div className="input-group-prepend">
                   <div className="input-group-text">
-                   <input type="checkbox" onChange={(e) => this.updateTask(e, this.props.id)} checked={this.props.done}/>
+                   <input type="checkbox" onChange={(e) => this.updateTask(e, this.props.id)} checked={this.state.status}/>
                   </div>
                 </div>
                <input type="button" className="form-control" data-toggle="modal" data-target="#myModal" value={this.props.title}/>
@@ -84,35 +76,8 @@ render(){
               <button className="btn btn-secondary mb-3" onClick={(e) => this.deleteTask(this.props.id)} id={this.props.id}>X</button>
             </div> 
 
-            <div className="modal" id="myModal">
-              <div className="modal-dialog">
-                <div className="modal-content">   
-                  <div className="modal-header">
-                    <h4 className="modal-title">Change task description</h4>
-                    <button type="button" className="close" data-dismiss="modal">&times;</button>
-                  </div>
-                  <div className="modal-body">
-                    <div className="input-group mb-3">
-                      <input  
-                      type="text" name="fname" className="form-control" 
-                      placeholder={this.props.title}  
-                      aria-describedby="button-addon2"  
-                      value={this.state.newItem}
-                      onChange={this.handleChange} />
-                    </div>
-                    <div className="input-group mb-3">
-                      <textarea className="form-control" id="exampleFormControlTextarea1" 
-                      placeholder={this.props.description}  rows="3" ></textarea>
-                    </div>
-                  </div>
-
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Submit</button>
-                    <button type="button" className="btn btn-danger" data-dismiss="modal">Close</button>
-                  </div>
-                </div>
-              </div>
-            </div> 
+          
+            <Modal/>
           </div>
         </li>     
     );
