@@ -77,7 +77,7 @@ render(){
             </div> 
 
           
-            <Modal/>
+            <Modal id={this.props.id} title={this.props.title} done={this.state.status} description={this.props.description}/>
           </div>
         </li>     
     );
