@@ -1,31 +1,35 @@
 import React from 'react';
 import axios from 'axios'
 //import update from 'immutability-helper'
-import Modal from './Modal'
+import Update from './Update'
 
 class ToDoItem extends React.Component{
 constructor(props) {
     super(props);
     this.state = {
-      status: false
+      status: false,
+      idModal: 0
     };
   }
 
   getTask(id){
-    console.log("get id: "+id);
+    console.log("get id item : "+id);
     axios.get(`http://localhost:3000/tasks/${id}`)
     .then(response => {
       this.setState({status: response.data.done});
+     // console.log("id: "+this.props.id+" status : "+this.state.status);
     });
   }
 
-  componentDidMount() {
+  componentWillMount() {
    this.getTask(this.props.id);
+   this.setState({idModal: (this.props.id + 0,5)})
+   //console.log("after create modal id : "+this.props.id);
+  // console.log("id: "+this.props.id+" status : "+this.state.status);
   }
 
   updateTaskDone = (e, id) => {
     var checked = e.target.checked;
-    
     axios.put(`http://localhost:3000/tasks/${id}`, {task: {done: checked}})
     .then(response => {
       this.setState({status: response.data.done});
@@ -70,13 +74,14 @@ render(){
                    <input type="checkbox" onChange={(e) => this.updateTaskDone(e, this.props.id)} checked={this.state.status}/>
                   </div>
                 </div>
-               <input type="button" className="form-control" data-toggle="modal" data-target="#myModal" value={this.props.title}/>
+               <Update id = {this.props.id} buttonLabel = {this.props.title}/>
               </div>    
               <button className="btn btn-secondary mb-3" onClick={(e) => this.deleteTask(this.props.id)} id={this.props.id}>X</button>
             </div> 
-
-            <Modal id={this.props.id} title={this.props.title} done={this.state.status} description={this.props.description}/>
           </div>
+          
+         
+
         </li>     
     );
   }

@@ -31,7 +31,9 @@ render(){
         <div className="over-class">
           <ul className="p-4">
             {this.state.tasks.map(item => {
-              return (<ToDoItem id={item.id} title={item.title} done={item.done} description={item.description}/>);})
+              return (
+                <ToDoItem id={item.id} title={item.title} done={item.done} description={item.description}/>
+              );})
             }
           </ul>
         </div>
