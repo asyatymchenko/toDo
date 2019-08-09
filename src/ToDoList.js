@@ -11,7 +11,6 @@ constructor(props) {
   }
   
   getTask(){
-    console.log("to_do_LIST_GET");
     axios.get('http://localhost:3000/tasks')
     .then(response => {
       for (let i = 0; i < response.data.length; i++) {
@@ -28,7 +27,6 @@ constructor(props) {
 render(){
     return  (
       <div className ="col-5 justify-content-center">
-        <div className="over-class">
           <ul className="p-4">
             {this.state.tasks.map(item => {
               return (
@@ -36,7 +34,6 @@ render(){
               );})
             }
           </ul>
-        </div>
       </div> 
     );
   }

@@ -26,17 +26,14 @@ class Update extends React.Component {
   }
 
    getTask(id){
-   // console.log("get id modal : "+id);
     axios.get(`http://localhost:3000/tasks/${id}`)
     .then(response => {
       this.setState({oldTitle: response.data.title, oldDescription: response.data.description});
-      //console.log(this.state.title, this.state.description);
-      console.log("update data: "+this.props.id+" "+this.state.oldTitle+" "+this.state.oldDescription);
     });
   }
 
   componentDidMount() {
-    console.log("update id: "+this.props.id);
+   // console.log("update id: "+this.props.id);
    this.getTask(this.props.id);
   }
 
@@ -51,13 +48,12 @@ class Update extends React.Component {
   render() {
     return (
       <div>
-        <Button outline color="secondary"  onClick={this.toggle} >{this.props.buttonLabel}</Button>
-        <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className} aria-labelledby="contained-modal-title-vcenter"
-      centered>
-          <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
+        <Button outline color="secondary"  onClick={this.toggle}>{this.props.buttonLabel}</Button>
+        <Modal  isOpen={this.state.modal} toggle={this.toggle} className={this.props.className} 
+                aria-labelledby="contained-modal-title-vcenter"centered>
+          <ModalHeader toggle={this.toggle}>Change your task</ModalHeader>
           <ModalBody>
-
-           <div className="input-group mb-3">     
+            <div className="input-group mb-3">     
               <input  
               type="text" name="fname" className="form-control" 
               placeholder={this.state.oldTitle}  
@@ -71,7 +67,6 @@ class Update extends React.Component {
               defaultValue={this.state.oldDescription}
               onChange={this.handleChangeDescr} rows="3" ></textarea>
             </div>
-          
           </ModalBody>
           <ModalFooter>
             <Button color="primary" onClick={this.toggle} disabled={!this.state.newTitle.length}>Submit</Button>{' '}
