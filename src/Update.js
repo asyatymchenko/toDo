@@ -19,7 +19,9 @@ class Update extends React.Component {
 
   toggle() {
     this.setState(prevState => ({
-      modal: !prevState.modal
+      modal: !prevState.modal,
+      newTitle:'',
+      newDescription: ''
     }));
   }
 
@@ -45,12 +47,13 @@ class Update extends React.Component {
   handleChangeDescr = (e) => {
     this.setState({newDescription: e.target.value});
   }
-  
+
   render() {
     return (
       <div>
         <Button outline color="secondary"  onClick={this.toggle} >{this.props.buttonLabel}</Button>
-        <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+        <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className} aria-labelledby="contained-modal-title-vcenter"
+      centered>
           <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
           <ModalBody>
 
