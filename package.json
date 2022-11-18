@@ -7,7 +7,7 @@
     "immutability-helper": "^3.0.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-scripts": "3.0.1",
+    "react-scripts": "5.0.1",
     "react-z-index": "^3.0.0",
     "reactstrap": "^8.0.1"
   },
